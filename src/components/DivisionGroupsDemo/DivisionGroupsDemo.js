@@ -19,6 +19,7 @@ function DivisionGroupsDemo({
   const [numOfGroups, setNumOfGroups] = React.useState(initialNumOfGroups)
 
   const numOfItemsPerGroup = Math.floor(numOfItems / numOfGroups)
+  const totalNumInGroups = numOfGroups * numOfItemsPerGroup
 
   const remainder = includeRemainderArea ? numOfItems % numOfGroups : null
 
@@ -51,22 +52,27 @@ function DivisionGroupsDemo({
 
         <div className={styles.demoWrapper}>
           <div className={clsx(styles.demoArea)} style={gridStructure}>
-            {range(numOfGroups).map((groupIndex) => (
-              <div key={groupIndex} className={styles.group}>
-                {range(numOfItemsPerGroup).map((index) => {
-                  const totalInPreviousGroups = groupIndex * numOfItemsPerGroup
-                  const layoutId = `${id}-${index + totalInPreviousGroups}`
+            {range(numOfGroups).map((groupIndex) => {
+              const totalInPreviousGroups = groupIndex * numOfItemsPerGroup
+              return (
+                <div key={groupIndex} className={styles.group}>
+                  {range(
+                    totalInPreviousGroups,
+                    totalInPreviousGroups + numOfItemsPerGroup
+                  ).map((index) => {
+                    const layoutId = `${id}-${index}`
 
-                  return (
-                    <motion.div
-                      layoutId={layoutId}
-                      key={layoutId}
-                      className={styles.item}
-                    />
-                  )
-                })}
-              </div>
-            ))}
+                    return (
+                      <motion.div
+                        layoutId={layoutId}
+                        key={layoutId}
+                        className={styles.item}
+                      />
+                    )
+                  })}
+                </div>
+              )
+            })}
           </div>
         </div>
 
@@ -74,9 +80,18 @@ function DivisionGroupsDemo({
           <div className={styles.remainderArea}>
             <p className={styles.remainderHeading}>Remainder Area</p>
 
-            {range(remainder).map((index) => {
-              return <div key={index} className={styles.item} />
-            })}
+            {range(totalNumInGroups, numOfItems)
+              .reverse()
+              .map((index) => {
+                const layoutId = `${id}-${index}`
+                return (
+                  <motion.div
+                    layoutId={layoutId}
+                    key={layoutId}
+                    className={styles.item}
+                  />
+                )
+              })}
           </div>
         )}
 
