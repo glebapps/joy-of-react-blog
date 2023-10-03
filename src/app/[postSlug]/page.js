@@ -1,5 +1,6 @@
 import React from 'react'
 import { MDXRemote } from 'next-mdx-remote/rsc'
+import { notFound } from 'next/navigation'
 
 import { BLOG_TITLE } from '@/constants'
 import BlogHero from '@/components/BlogHero'
@@ -13,16 +14,25 @@ const getBlogPost = React.cache(async (slug) => {
 })
 
 export async function generateMetadata({ params }) {
-  const { frontmatter } = await getBlogPost(params.postSlug)
+  const post = await getBlogPost(params.postSlug)
+
+  if (!post) {
+    return null
+  }
+
+  const { title, abstract } = post.frontmatter
 
   return {
-    title: `${frontmatter.title} • ${BLOG_TITLE}`,
-    description: frontmatter.abstract,
+    title: `${title} • ${BLOG_TITLE}`,
+    description: abstract,
   }
 }
 
 async function BlogPost({ params }) {
   const post = await getBlogPost(params.postSlug)
+  if (!post) {
+    notFound()
+  }
   const { title, publishedOn } = post.frontmatter
 
   return (
