@@ -3,10 +3,10 @@ import { MDXRemote } from 'next-mdx-remote/rsc'
 
 import { BLOG_TITLE } from '@/constants'
 import BlogHero from '@/components/BlogHero'
-import CodeSnippet from '@/components/CodeSnippet'
 
 import styles from './postSlug.module.css'
 import { loadBlogPost } from '@/helpers/file-helpers'
+import COMPONENT_MAP from '@/helpers/mdx-components'
 
 const getBlogPost = React.cache(async (slug) => {
   return loadBlogPost(slug)
@@ -29,12 +29,7 @@ async function BlogPost({ params }) {
     <article className={styles.wrapper}>
       <BlogHero title={title} publishedOn={publishedOn} />
       <div className={styles.page}>
-        <MDXRemote
-          source={post.content}
-          components={{
-            pre: CodeSnippet,
-          }}
-        />
+        <MDXRemote source={post.content} components={COMPONENT_MAP} />
       </div>
     </article>
   )
