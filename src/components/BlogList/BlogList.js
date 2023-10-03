@@ -7,14 +7,8 @@ async function BlogList() {
 
   return (
     <>
-      {posts.map(({ slug, title, abstract, publishedOn }) => (
-        <BlogSummaryCard
-          key={slug}
-          slug={slug}
-          title={title}
-          abstract={abstract}
-          publishedOn={publishedOn}
-        />
+      {posts.map(({ slug, ...delegated }) => (
+        <BlogSummaryCard key={slug} slug={slug} {...delegated} />
       ))}
     </>
   )
